@@ -20,7 +20,7 @@ paying AI micro-SaaS for solo founders.
 
 ### 1. Stack
 
-- Next.js 15 App Router, TypeScript strict, Tailwind, shadcn/ui (slate base).
+- Next.js 16 App Router, TypeScript strict, Tailwind, shadcn/ui (slate base). (Updated in Phase 0 from "15" — `create-next-app@latest` shipped 16.2.6 at bootstrap.)
 - Supabase (Postgres + pgvector + Auth + Storage + Realtime).
 - Inngest (events, queues, schedules, durable steps) — NOT raw Vercel Cron.
 - Upstash Redis (cache + rate limit).

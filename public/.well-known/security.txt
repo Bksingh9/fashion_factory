@@ -1,0 +1,7 @@
+# PainPilot security contact (RFC 9116)
+# Reach us about security issues at the address below. PGP key planned.
+
+Contact: mailto:security@painpilot.dev
+Expires: 2027-01-01T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://painpilot.dev/.well-known/security.txt

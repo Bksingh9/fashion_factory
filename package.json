@@ -9,9 +9,11 @@
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
     "report": "playwright show-report",
-    "codegen": "playwright codegen"
+    "codegen": "playwright codegen",
+    "mcp": "playwright-mcp"
   },
   "devDependencies": {
+    "@playwright/mcp": "^0.0.75",
     "@playwright/test": "^1.49.0",
     "@types/node": "^22.10.0"
   }

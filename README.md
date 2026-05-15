@@ -24,3 +24,17 @@ npm run codegen        # record a new test
 
 - `playwright.config.ts` — project config (chromium/firefox/webkit)
 - `tests/` — your test specs
+- `.mcp.json` — `@playwright/mcp` server config (Claude Code picks it up automatically)
+
+## Playwright MCP
+
+`@playwright/mcp` is installed as a dev dependency. In Claude Code (or any
+MCP-compatible client), the server defined in `.mcp.json` lets the agent
+drive a real browser — navigate, click, fill forms, take snapshots — for
+debugging tests or generating new ones.
+
+Run it standalone:
+
+```bash
+npm run mcp
+```

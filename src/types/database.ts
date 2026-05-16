@@ -306,6 +306,57 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["cluster_saves"]["Insert"]>;
         Relationships: [];
       };
+      specs: {
+        Row: {
+          id: string;
+          user_id: string;
+          cluster_id: string;
+          version: number;
+          status: "draft" | "locked";
+          audience: Json | null;
+          competitors: Json | null;
+          wtp: Json | null;
+          pricing: Json | null;
+          features: Json | null;
+          gtm: Json | null;
+          locked_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          cluster_id: string;
+          version?: number;
+          status?: "draft" | "locked";
+          audience?: Json | null;
+          competitors?: Json | null;
+          wtp?: Json | null;
+          pricing?: Json | null;
+          features?: Json | null;
+          gtm?: Json | null;
+          locked_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["specs"]["Insert"]>;
+        Relationships: [];
+      };
+      spec_events: {
+        Row: {
+          id: number;
+          spec_id: string;
+          kind: "section_generated" | "edited" | "locked" | "unlocked";
+          section: string | null;
+          payload: Json | null;
+          created_at: string;
+        };
+        Insert: {
+          spec_id: string;
+          kind: "section_generated" | "edited" | "locked" | "unlocked";
+          section?: string | null;
+          payload?: Json | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["spec_events"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

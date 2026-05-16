@@ -12,7 +12,8 @@
     "test:e2e": "playwright test",
     "verify:phase0": "tsx scripts/verify-phase-0.ts",
     "verify:phase1": "tsx scripts/verify-phase-1.ts",
-    "verify:phase2": "tsx scripts/verify-phase-2.ts"
+    "verify:phase2": "tsx scripts/verify-phase-2.ts",
+    "verify:phase3": "tsx scripts/verify-phase-3.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.96.0",

@@ -442,6 +442,98 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["ship_files"]["Insert"]>;
         Relationships: [];
       };
+      products: {
+        Row: {
+          id: string;
+          ship_run_id: string;
+          user_id: string;
+          polar_product_id: string | null;
+          slug: string;
+          name: string;
+          status: "private" | "public";
+          revenue_share_bps: number;
+          created_at: string;
+        };
+        Insert: {
+          ship_run_id: string;
+          user_id: string;
+          polar_product_id?: string | null;
+          slug: string;
+          name: string;
+          status?: "private" | "public";
+          revenue_share_bps?: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["products"]["Insert"]>;
+        Relationships: [];
+      };
+      product_metrics: {
+        Row: {
+          id: number;
+          product_id: string;
+          snapshot_at: string;
+          mrr_usd: number | null;
+          arr_usd: number | null;
+          users_count: number | null;
+          active_users_count: number | null;
+          churn_30d: number | null;
+          source: "polar" | "self_report" | "stripe_proxy";
+        };
+        Insert: {
+          product_id: string;
+          mrr_usd?: number | null;
+          arr_usd?: number | null;
+          users_count?: number | null;
+          active_users_count?: number | null;
+          churn_30d?: number | null;
+          source: "polar" | "self_report" | "stripe_proxy";
+        };
+        Update: Partial<Database["public"]["Tables"]["product_metrics"]["Insert"]>;
+        Relationships: [];
+      };
+      product_events: {
+        Row: {
+          id: number;
+          product_id: string;
+          kind: string;
+          payload: Json;
+          polar_event_id: string | null;
+          received_at: string;
+        };
+        Insert: {
+          product_id: string;
+          kind: string;
+          payload: Json;
+          polar_event_id?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["product_events"]["Insert"]>;
+        Relationships: [];
+      };
+      payouts: {
+        Row: {
+          id: string;
+          user_id: string;
+          period_start: string;
+          period_end: string;
+          gross_usd: number;
+          fee_usd: number;
+          net_usd: number;
+          status: "pending" | "sent" | "failed";
+          polar_payout_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          period_start: string;
+          period_end: string;
+          gross_usd?: number;
+          fee_usd?: number;
+          net_usd?: number;
+          status?: "pending" | "sent" | "failed";
+          polar_payout_id?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["payouts"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

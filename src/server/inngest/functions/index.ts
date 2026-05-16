@@ -11,6 +11,9 @@ import { clusterSummarize } from "./cluster.summarize";
 import { privacyPurgeAuthors } from "./privacy.purge_authors";
 import { validateGenerate, validateCompetitorRefresh } from "./validate.generate";
 import { shipRun } from "./ship.run";
+import { polarEventIngest } from "./polar.event.ingest";
+import { productMetricsSnapshot } from "./product.metrics.snapshot";
+import { payoutsCompute } from "./payouts.compute";
 
 export const functions = [
   noopFn,
@@ -23,4 +26,7 @@ export const functions = [
   validateGenerate, // event validate.requested
   validateCompetitorRefresh, // cron 0 4 * * * — weekly competitors refresh on draft specs
   shipRun, // event ship.requested — locked spec → fresh GitHub repo
+  polarEventIngest, // event polar.event.received — idempotent on event.id
+  productMetricsSnapshot, // cron 0 * * * * — hourly product metrics snapshot
+  payoutsCompute, // cron 0 6 1 * * — monthly payout computation
 ];

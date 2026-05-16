@@ -30,6 +30,9 @@ const schema = z.object({
   // Polar
   POLAR_ACCESS_TOKEN: z.string().min(1),
   POLAR_WEBHOOK_SECRET: z.string().min(1),
+  // Phase 5: org id + configurable rev-share. Defaults to 1000 bps (10%).
+  POLAR_ORG_ID: z.string().min(1).optional(),
+  PAINPILOT_REVENUE_SHARE_BPS: z.coerce.number().int().min(0).max(10000).optional(),
 
   // Upstash Redis
   UPSTASH_REDIS_REST_URL: z.string().url(),

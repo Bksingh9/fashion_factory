@@ -72,6 +72,10 @@ process.env.LLM_STUB = process.env.LLM_STUB ?? "1";
 process.env.STRIPE_STUB = process.env.STRIPE_STUB ?? "1";
 process.env.RATELIMIT_STUB = process.env.RATELIMIT_STUB ?? "1";
 process.env.OBSERVABILITY_STUB = process.env.OBSERVABILITY_STUB ?? "1";
+process.env.STUB_CRAWLER = process.env.STUB_CRAWLER ?? "1";
+process.env.GITHUB_STUB = process.env.GITHUB_STUB ?? "1";
+process.env.POLAR_STUB = process.env.POLAR_STUB ?? "1";
+process.env.VALIDATE_STREAM_STUB = process.env.VALIDATE_STREAM_STUB ?? "1";
 
 // NODE_ENV is declared readonly by Next's process types. Vitest sets it to
 // "test" already; we don't touch it here.

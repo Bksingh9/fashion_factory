@@ -54,4 +54,10 @@ export type AppEvents = {
   "github.app.event": {
     data: { event: string; payload: unknown };
   };
+  "polar.event.received": {
+    data: { event: { id: string; type: string; data: Record<string, unknown> } };
+  };
+  "product.publish.requested": {
+    data: { product_id: string };
+  };
 };

@@ -14,7 +14,7 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { env } from "@/env";
-import type { Plan } from "@/types/database";
+import type { CrawlSourceId, Plan } from "@/types/database";
 
 export interface RateLimitResult {
   success: boolean;
@@ -29,20 +29,17 @@ const LLM_PLAN_LIMITS: Record<Plan, number> = {
   agency: 10000,
 };
 
-export type CrawlSource =
-  | "reddit"
-  | "hn"
-  | "ph"
-  | "app_store"
-  | "trustpilot"
-  | "g2"
-  | "ih";
+// Canonical union lives in /src/types/database.ts (mirrors the
+// crawl_sources.id check constraint). Re-export to keep the existing
+// `import { CrawlSource } from "@/server/ratelimit"` callsites working.
+export type CrawlSource = CrawlSourceId;
 
 const CRAWL_RPM_LIMITS: Record<CrawlSource, number> = {
   reddit: 8,
   hn: 30,
   ph: 10,
   app_store: 20,
+  play_store: 15,
   trustpilot: 10,
   g2: 10,
   ih: 10,

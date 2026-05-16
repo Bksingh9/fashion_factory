@@ -14,6 +14,7 @@ import { shipRun } from "./ship.run";
 import { polarEventIngest } from "./polar.event.ingest";
 import { productMetricsSnapshot } from "./product.metrics.snapshot";
 import { payoutsCompute } from "./payouts.compute";
+import { evalRunNightly, perfBudgetScan, opsHeartbeat } from "./ops.crons";
 
 export const functions = [
   noopFn,
@@ -29,4 +30,7 @@ export const functions = [
   polarEventIngest, // event polar.event.received — idempotent on event.id
   productMetricsSnapshot, // cron 0 * * * * — hourly product metrics snapshot
   payoutsCompute, // cron 0 6 1 * * — monthly payout computation
+  evalRunNightly, // cron 0 2 * * * — promptfoo regression sweep
+  perfBudgetScan, // cron */5 * * * * — perf-budget p95 sweep
+  opsHeartbeat, // cron * * * * * — work-plane liveness
 ];

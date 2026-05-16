@@ -1,0 +1,21 @@
+# Promptfoo suite for the `extract.signals` prompt. Real eval runs land in
+# Phase 6.5; this file pins the contract so the runner knows the suite
+# exists. Each test case includes a synthetic complaint + an expected
+# JSON-schema assertion against extractSignalsSchema.
+description: extract.signals — turn a complaint into structured pain signals
+prompts:
+  - "{{ prompt }}"
+providers:
+  - id: anthropic:claude-3-5-sonnet-latest
+tests:
+  - vars:
+      prompt: "Stripe payouts take 12 days for my new SaaS. Going to migrate to Lemon Squeezy."
+    assert:
+      - type: is-json
+      - type: contains-json
+        value:
+          required: [pain, audience, current_solution, willingness_to_pay, keywords]
+  - vars:
+      prompt: "Indie Hackers thread: how do I find my first 10 customers without a network?"
+    assert:
+      - type: is-json

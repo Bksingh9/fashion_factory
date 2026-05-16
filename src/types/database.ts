@@ -534,6 +534,54 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["payouts"]["Insert"]>;
         Relationships: [];
       };
+      eval_runs: {
+        Row: {
+          id: string;
+          prompt_name: string;
+          prompt_version: string;
+          suite: string;
+          passed: number;
+          failed: number;
+          total: number;
+          score: number | null;
+          report: Json | null;
+          started_at: string;
+          finished_at: string | null;
+        };
+        Insert: {
+          prompt_name: string;
+          prompt_version: string;
+          suite: string;
+          passed?: number;
+          failed?: number;
+          total?: number;
+          score?: number | null;
+          report?: Json | null;
+          finished_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["eval_runs"]["Insert"]>;
+        Relationships: [];
+      };
+      perf_budget_violations: {
+        Row: {
+          id: number;
+          route: string;
+          metric: string;
+          threshold: number;
+          observed: number;
+          window: string;
+          created_at: string;
+        };
+        Insert: {
+          route: string;
+          metric: string;
+          threshold: number;
+          observed: number;
+          window: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["perf_budget_violations"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

@@ -79,6 +79,11 @@ const schema = z.object({
   // Optional override for the default ship template repo URL.
   SHIP_TEMPLATE_REPO: z.string().url().optional(),
 
+  // Phase 6 ops knobs (all .optional()).
+  STAGING: z.string().optional(),
+  EVAL_FAIL_ON_REGRESSION: z.string().optional(),
+  LANGFUSE_SAMPLE_RATE: z.coerce.number().min(0).max(1).optional(),
+
   // App
   NEXT_PUBLIC_APP_URL: z.string().url(),
   REDDIT_USER_AGENT: z.string().min(1),

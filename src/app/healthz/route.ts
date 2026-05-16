@@ -272,14 +272,21 @@ async function runOne(name: CheckName): Promise<[CheckName, CheckResult]> {
 
 export async function GET(): Promise<Response> {
   const names = Object.keys(checks) as CheckName[];
+  const t0 = performance.now();
   const results = await Promise.all(names.map(runOne));
   const checksOut: Record<CheckName, CheckResult> = Object.fromEntries(results) as Record<
     CheckName,
     CheckResult
   >;
   const ok = Object.values(checksOut).every((c) => c.ok);
-  return new Response(JSON.stringify({ ok, checks: checksOut }, null, 2), {
-    status: ok ? 200 : 503,
-    headers: { "content-type": "application/json" },
-  });
+  // Phase 6: surface the marketplace TTFB probe latency in /healthz so an
+  // uptime monitor can alert on the §6 200ms budget without scraping logs.
+  const marketplace_ttfb_ms = Math.round(performance.now() - t0);
+  return new Response(
+    JSON.stringify({ ok, checks: checksOut, marketplace_ttfb_ms }, null, 2),
+    {
+      status: ok ? 200 : 503,
+      headers: { "content-type": "application/json" },
+    },
+  );
 }

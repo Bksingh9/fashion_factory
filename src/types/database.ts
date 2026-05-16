@@ -16,6 +16,15 @@ export type Json =
 
 export type Plan = "free" | "pro" | "studio" | "agency";
 export type LlmKind = "hot" | "premium" | "research" | "embed" | "rerank";
+export type CrawlSourceId =
+  | "reddit"
+  | "hn"
+  | "ph"
+  | "app_store"
+  | "play_store"
+  | "trustpilot"
+  | "g2"
+  | "ih";
 
 export interface Database {
   public: {
@@ -180,6 +189,121 @@ export interface Database {
           installation_id: number;
         };
         Update: Partial<Database["public"]["Tables"]["github_installations"]["Insert"]>;
+        Relationships: [];
+      };
+      crawl_sources: {
+        Row: {
+          id: CrawlSourceId;
+          enabled: boolean;
+          params: Json;
+          created_at: string;
+        };
+        Insert: {
+          id: CrawlSourceId;
+          enabled?: boolean;
+          params?: Json;
+        };
+        Update: Partial<Database["public"]["Tables"]["crawl_sources"]["Insert"]>;
+        Relationships: [];
+      };
+      crawl_runs: {
+        Row: {
+          id: string;
+          source: CrawlSourceId;
+          started_at: string;
+          finished_at: string | null;
+          cursor: string | null;
+          items_fetched: number;
+          items_kept: number;
+          error: string | null;
+        };
+        Insert: {
+          source: CrawlSourceId;
+          finished_at?: string | null;
+          cursor?: string | null;
+          items_fetched?: number;
+          items_kept?: number;
+          error?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["crawl_runs"]["Insert"]>;
+        Relationships: [];
+      };
+      // pgvector columns surface as `string` over the wire (Postgres serializes
+      // them as text like "[0.1, 0.2, ...]"). The router code parses them when
+      // it needs numeric work; for the typed client they're just strings.
+      clusters: {
+        Row: {
+          id: string;
+          centroid: string;
+          member_count: number;
+          title: string | null;
+          summary: string | null;
+          pain_score: number | null;
+          audience: string | null;
+          keywords: string[] | null;
+          last_signal_at: string;
+          created_at: string;
+        };
+        Insert: {
+          centroid: string;
+          member_count?: number;
+          title?: string | null;
+          summary?: string | null;
+          pain_score?: number | null;
+          audience?: string | null;
+          keywords?: string[] | null;
+          last_signal_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["clusters"]["Insert"]>;
+        Relationships: [];
+      };
+      signals: {
+        Row: {
+          id: string;
+          source: CrawlSourceId;
+          source_id: string;
+          url: string;
+          title: string | null;
+          body: string;
+          author: string | null;
+          author_collected_at: string | null;
+          posted_at: string;
+          score: number | null;
+          comments_count: number | null;
+          embedding: string | null;
+          cluster_id: string | null;
+          extracted: Json | null;
+          created_at: string;
+        };
+        Insert: {
+          source: CrawlSourceId;
+          source_id: string;
+          url: string;
+          title?: string | null;
+          body: string;
+          author?: string | null;
+          author_collected_at?: string | null;
+          posted_at: string;
+          score?: number | null;
+          comments_count?: number | null;
+          embedding?: string | null;
+          cluster_id?: string | null;
+          extracted?: Json | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["signals"]["Insert"]>;
+        Relationships: [];
+      };
+      cluster_saves: {
+        Row: {
+          user_id: string;
+          cluster_id: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          cluster_id: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["cluster_saves"]["Insert"]>;
         Relationships: [];
       };
     };

@@ -48,6 +48,10 @@ const DUMMY: Record<string, string> = {
   // PostHog
   NEXT_PUBLIC_POSTHOG_KEY: "stub",
   NEXT_PUBLIC_POSTHOG_HOST: "https://stub.i.posthog.com",
+  // Reddit OAuth + Product Hunt (Phase 2)
+  REDDIT_CLIENT_ID: "stub",
+  REDDIT_CLIENT_SECRET: "stub",
+  PRODUCT_HUNT_API_TOKEN: "stub",
   // App
   NEXT_PUBLIC_APP_URL: "http://localhost:3000",
   REDDIT_USER_AGENT: "painpilot-test/0.1",

@@ -236,7 +236,12 @@ async function main(): Promise<void> {
       skip("validate schemas parse fixtures", "schemas.ts not implemented yet (chunk 3)");
     } else {
       const audienceOk = mod.audienceSchema?.safeParse({
-        primary: { role: "X", size: "Y", channels: ["a"], jobs_to_be_done: ["j"] },
+        primary: {
+          role: "Indie founder",
+          size: "~50k",
+          channels: ["r/SaaS", "Indie Hackers"],
+          jobs_to_be_done: ["validate demand", "ship MVP"],
+        },
         secondary: [],
         anti_personas: [],
         confidence: 0.7,
@@ -254,24 +259,26 @@ async function main(): Promise<void> {
     if (mod === null || typeof mod.isLockable !== "function") {
       skip("lock.ts isLockable", "lock.ts not implemented yet (chunk 3)");
     } else {
+      // Realistic fixtures: empty objects don't count as "section present"
+      // — each section should hold a non-empty structured payload before lock.
       const blockedOnNull = mod.isLockable({
-        audience: null,
-        competitors: {},
-        wtp: {},
-        pricing: {},
-        features: {},
-        gtm: {},
+        audience: { role: "x" },
+        competitors: { summary: "y" },
+        wtp: { rationale: "z" },
+        pricing: { plans: [{}] },
+        features: { mvp: [{}] },
+        gtm: null,
       });
       const allowedFull = mod.isLockable({
-        audience: {},
-        competitors: {},
-        wtp: {},
-        pricing: {},
-        features: {},
-        gtm: {},
+        audience: { role: "Indie founder" },
+        competitors: { summary: "Stripe dominates" },
+        wtp: { wtp_band: "$10-50" },
+        pricing: { plans: [{ name: "Pro" }] },
+        features: { mvp: [{ slug: "save" }] },
+        gtm: { channels: [{ name: "r/SaaS" }] },
       });
       if (blockedOnNull === false && allowedFull === true) {
-        ok("lock.ts: isLockable rejects null section, accepts all-six-present");
+        ok("lock.ts: isLockable rejects null section, accepts all-six-non-empty");
       } else {
         fail("lock.ts isLockable", `null=${String(blockedOnNull)} full=${String(allowedFull)}`);
       }

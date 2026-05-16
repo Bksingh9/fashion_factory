@@ -31,4 +31,10 @@ export type AppEvents = {
   "cluster.touched": {
     data: { cluster_id: string };
   };
+  "validate.requested": {
+    data: { spec_id: string; sections?: string[]; user_id?: string };
+  };
+  "validate.section.completed": {
+    data: { spec_id: string; section: string };
+  };
 };

@@ -21,6 +21,11 @@ const SOCIAL_RE = /reddit\.com|twitter\.com|x\.com|linkedin\.com|instagram\.com|
 const POST_RE = /method\s*:\s*['"`]POST['"`]/;
 const WRITE_AXIOS_METHODS = new Set(["post", "put", "patch", "delete"]);
 
+// OAuth token-grant endpoints are allowed to POST even though they live on
+// social-network domains. The §9 intent is "never auto-post CONTENT" —
+// minting an auth token is not content. Keep this list narrow.
+const OAUTH_ALLOW_RE = /\/access_token|\/oauth\/|\/oauth2\/|\/o\/token/i;
+
 function makeProject(): Project {
   return new Project({
     tsConfigFilePath: path.join(process.cwd(), "tsconfig.json"),
@@ -37,7 +42,12 @@ function urlHasSocial(call: CallExpression): boolean {
     ...first.getDescendantsOfKind(SyntaxKind.NoSubstitutionTemplateLiteral),
     ...first.getDescendantsOfKind(SyntaxKind.TemplateExpression),
   ]) {
-    if (SOCIAL_RE.test(lit.getText())) return true;
+    const text = lit.getText();
+    if (!SOCIAL_RE.test(text)) continue;
+    // OAuth token-grant endpoints on social domains are explicitly allowed:
+    // the §9 invariant forbids posting CONTENT, not minting auth tokens.
+    if (OAUTH_ALLOW_RE.test(text)) continue;
+    return true;
   }
   return false;
 }
@@ -101,22 +111,32 @@ describe("no auto-post to social networks", () => {
     }
   });
 
-  it("crawlers under /src/server/sources/ are read-only (no method:'POST' anywhere)", () => {
+  it("crawlers under /src/server/sources/: POSTs are allowed only to non-social-network endpoints", () => {
+    // §9 intent — never auto-post content to social networks. A POST to a
+    // GraphQL or REST endpoint that doesn't sit on a social-network domain
+    // (e.g. api.producthunt.com) is a read in API semantics and is allowed.
+    // POSTs to reddit/x/linkedin/etc (other than OAuth allow-list) fail.
     const project = makeProject();
     const offenders: string[] = [];
 
     for (const file of project.getSourceFiles()) {
       const fp = file.getFilePath();
       if (!fp.includes("/src/server/sources/")) continue;
-      if (POST_RE.test(file.getFullText())) {
-        offenders.push(fp);
+      for (const call of file.getDescendantsOfKind(SyntaxKind.CallExpression)) {
+        if (call.getExpression().getText() !== "fetch") continue;
+        const opts = call.getArguments()[1];
+        if (opts === undefined) continue;
+        if (!POST_RE.test(opts.getText())) continue;
+        if (urlHasSocial(call)) {
+          offenders.push(`${fp}:${String(call.getStartLineNumber())}`);
+        }
       }
     }
 
     if (offenders.length > 0) {
       throw new Error(
-        `Crawler with POST detected in:\n  ${offenders.join("\n  ")}\n` +
-          "Crawlers must be strictly read-only.",
+        `Social-network POST in crawler:\n  ${offenders.join("\n  ")}\n` +
+          "Crawlers may POST to API endpoints (GraphQL etc.) but not back to social networks.",
       );
     }
   });

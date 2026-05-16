@@ -16,7 +16,8 @@
     "verify:phase3": "tsx scripts/verify-phase-3.ts",
     "verify:phase4": "tsx scripts/verify-phase-4.ts",
     "verify:phase5": "tsx scripts/verify-phase-5.ts",
-    "verify:phase6": "tsx scripts/verify-phase-6.ts"
+    "verify:phase6": "tsx scripts/verify-phase-6.ts",
+    "verify:phase7": "tsx scripts/verify-phase-7.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.96.0",

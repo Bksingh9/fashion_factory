@@ -1,0 +1,28 @@
+# PainPilot v1.0.0
+
+Opportunity OS for solo founders. Internet complaints → validated demand → shipped, paying AI micro-SaaS.
+
+## What's in v1.0.0
+
+- **Listen** — 7-source crawler fleet (Reddit OAuth, HN Firebase, Product Hunt GraphQL, Apple App Store RSS, Play Store, Trustpilot, G2, Indie Hackers).
+- **Cluster** — pgvector HNSW + cosine-threshold clustering (T = 0.82, voyage-3-large).
+- **Validate** — streamed 5-section product specs (audience, competitors, WTP+pricing, features, GTM).
+- **Ship** — locked spec → fresh GitHub repo via the PainPilot App; optional Vercel deploy.
+- **Operate** — Polar marketplace + per-product MRR/users metrics + monthly payouts (10% revenue share to PainPilot, configurable).
+- **Ops** — promptfoo eval nightly, perf-budget p95 sweep every 5 min, admin-only `/app/ops` panel.
+- **Marketplace** — public ISR listings, founder profiles, MDX blog, affiliate rotation.
+
+## Performance budgets
+
+- `/marketplace` TTFB < 200ms p95
+- `/app` feed first 20 cards < 800ms p95
+- Validate page generation < 6s p95
+- Spec generation streaming < 12s p95
+- Ship → repo created < 20s p95
+- Crawl lag (signal posted → in feed) < 30min p95
+- LLM cache hit rate > 55%
+- Sentry error rate < 0.5%
+
+## Privacy
+
+Reddit / author identifiers older than 90 days are nulled by the daily `privacy.purge_authors` cron — unless the containing cluster has at least one `cluster_saves` row from any user.

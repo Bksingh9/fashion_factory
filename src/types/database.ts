@@ -582,6 +582,74 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["perf_budget_violations"]["Insert"]>;
         Relationships: [];
       };
+      marketplace_listings: {
+        Row: {
+          id: string;
+          product_id: string;
+          slug: string;
+          headline: string;
+          body_md: string;
+          hero_image_path: string | null;
+          founder_handle: string | null;
+          featured: boolean;
+          published_at: string | null;
+          sort_score: number;
+          created_at: string;
+        };
+        Insert: {
+          product_id: string;
+          slug: string;
+          headline: string;
+          body_md: string;
+          hero_image_path?: string | null;
+          founder_handle?: string | null;
+          featured?: boolean;
+          published_at?: string | null;
+          sort_score?: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["marketplace_listings"]["Insert"]>;
+        Relationships: [];
+      };
+      affiliates: {
+        Row: {
+          id: string;
+          slug: string;
+          target_url: string;
+          partner: string | null;
+          rev_share_bps: number;
+          active: boolean;
+          rotation_weight: number;
+          created_at: string;
+        };
+        Insert: {
+          slug: string;
+          target_url: string;
+          partner?: string | null;
+          rev_share_bps?: number;
+          active?: boolean;
+          rotation_weight?: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["affiliates"]["Insert"]>;
+        Relationships: [];
+      };
+      affiliate_clicks: {
+        Row: {
+          id: number;
+          affiliate_id: string;
+          ip_hash: string | null;
+          ua_hash: string | null;
+          referrer: string | null;
+          created_at: string;
+        };
+        Insert: {
+          affiliate_id: string;
+          ip_hash?: string | null;
+          ua_hash?: string | null;
+          referrer?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["affiliate_clicks"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

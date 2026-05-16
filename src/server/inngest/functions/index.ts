@@ -15,6 +15,7 @@ import { polarEventIngest } from "./polar.event.ingest";
 import { productMetricsSnapshot } from "./product.metrics.snapshot";
 import { payoutsCompute } from "./payouts.compute";
 import { evalRunNightly, perfBudgetScan, opsHeartbeat } from "./ops.crons";
+import { marketplaceReindex, marketplaceAffiliateRotate } from "./marketplace.crons";
 
 export const functions = [
   noopFn,
@@ -33,4 +34,6 @@ export const functions = [
   evalRunNightly, // cron 0 2 * * * — promptfoo regression sweep
   perfBudgetScan, // cron */5 * * * * — perf-budget p95 sweep
   opsHeartbeat, // cron * * * * * — work-plane liveness
+  marketplaceReindex, // event marketplace.listing.updated — recomputes sort_score
+  marketplaceAffiliateRotate, // cron 0 0 * * * — daily affiliate weight rebalance
 ];

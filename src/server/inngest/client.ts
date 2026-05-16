@@ -60,4 +60,7 @@ export type AppEvents = {
   "product.publish.requested": {
     data: { product_id: string };
   };
+  "marketplace.listing.updated": {
+    data: { listing_id: string };
+  };
 };

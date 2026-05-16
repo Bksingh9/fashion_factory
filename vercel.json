@@ -1,0 +1,22 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "pnpm build",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "outputDirectory": ".next",
+  "regions": ["iad1"],
+  "functions": {
+    "src/app/api/inngest/route.ts": { "maxDuration": 300 },
+    "src/app/api/stripe/webhook/route.ts": { "maxDuration": 30 },
+    "src/app/api/polar/webhook/route.ts": { "maxDuration": 30 },
+    "src/app/api/github/webhook/route.ts": { "maxDuration": 30 },
+    "src/app/api/validate/stream/route.ts": { "maxDuration": 60 },
+    "src/app/api/ship/start/route.ts": { "maxDuration": 30 }
+  },
+  "crons": [
+    {
+      "path": "/healthz",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}

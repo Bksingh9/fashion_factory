@@ -7,6 +7,7 @@
  */
 import { Inngest } from "inngest";
 import { env } from "@/env";
+import type { CrawlSourceId } from "@/types/database";
 
 export const inngest = new Inngest({
   id: "painpilot",
@@ -17,5 +18,17 @@ export const inngest = new Inngest({
 export type AppEvents = {
   "noop.test": {
     data: { userId: string; throwOnce?: boolean };
+  };
+  "crawl.run.requested": {
+    data: { source: CrawlSourceId };
+  };
+  "signal.ingested": {
+    data: { signal_id: string };
+  };
+  "signal.embedded": {
+    data: { signal_id: string };
+  };
+  "cluster.touched": {
+    data: { cluster_id: string };
   };
 };

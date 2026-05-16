@@ -8,12 +8,14 @@ import { crawlRun } from "./crawl.run";
 import { signalEmbed } from "./signal.embed";
 import { signalCluster } from "./signal.cluster";
 import { clusterSummarize } from "./cluster.summarize";
+import { privacyPurgeAuthors } from "./privacy.purge_authors";
 
 export const functions = [
   noopFn,
-  crawlScheduler, // cron */10 * * * * — fans out crawl.run.requested events
+  crawlScheduler, // cron every 10 min — fans out crawl.run.requested events
   crawlRun, // event crawl.run.requested
   signalEmbed, // event signal.ingested
   signalCluster, // event signal.embedded
   clusterSummarize, // event cluster.touched (5m debounce)
+  privacyPurgeAuthors, // cron 0 3 * * * — §9 90-day author purge
 ];

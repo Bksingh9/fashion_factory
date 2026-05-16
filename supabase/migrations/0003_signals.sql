@@ -158,6 +158,34 @@ insert into public.crawl_sources (id, enabled, params) values
 on conflict (id) do nothing;
 
 -- ============================================================================
--- Phase 2 prompt bodies are populated in chunk 5; the rows already exist
--- from 0002_llm_registry.sql with placeholder bodies. No-op here.
+-- Phase 2 prompt bodies — UPDATE the rows seeded by 0002_llm_registry.sql.
+-- These are the actual instructions the LLM router prepends as the system
+-- message when called with promptName='extract.signals' /
+-- 'cluster.summarize'. Idempotent: re-running just overwrites the body.
 -- ============================================================================
+
+update public.prompts
+   set body = $body$You analyze a single user complaint and extract structured pain signals.
+Input is a forum, app-store, or social post body. Output JSON exactly matching:
+{ "pain": string,                    // one-sentence summary of the pain
+  "audience": string,                // who suffers from it, 1-4 words
+  "current_solution": string | null, // what they try today, or null
+  "willingness_to_pay": "none"|"low"|"medium"|"high",
+  "keywords": string[]               // 3-8 lowercase keywords, no #s, no hashtags
+}
+Be literal. Do not invent details not present in the input. If the post is not a complaint at all, set pain to a short paraphrase and willingness_to_pay to "none".$body$,
+       active = true
+ where name = 'extract.signals' and version = 'v1';
+
+update public.prompts
+   set body = $body$You see up to 10 related user complaints (signals) about the same underlying pain.
+Synthesize them into a single product opportunity. Output JSON exactly matching:
+{ "title": string,       // 6-10 words, framed as an OPPORTUNITY (e.g. "Faster Shopify analytics for small stores"), NOT "people complain about X"
+  "summary": string,     // 2-3 sentences, concrete and non-generic
+  "pain_score": number,  // 0-10 = severity * frequency * willingness, rounded to 1 decimal
+  "audience": string,    // most common audience across signals
+  "keywords": string[]   // 5-10 deduped lowercase keywords, no hashtags
+}
+Be specific. If signals contradict each other, pick the majority opinion and ignore the rest.$body$,
+       active = true
+ where name = 'cluster.summarize' and version = 'v1';

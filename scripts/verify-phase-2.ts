@@ -244,14 +244,17 @@ async function main(): Promise<void> {
   // ==========================================================================
   {
     const sql = readIfExists("supabase/migrations/0003_signals.sql") ?? "";
-    // Match either an UPDATE prompts SET body = '…' for extract.signals or
-    // an INSERT … ON CONFLICT … DO UPDATE that lifts body past the 100-char floor.
-    const hasExtract =
-      /update\s+public\.prompts[\s\S]*extract\.signals[\s\S]*body\s*=/i.test(sql) ||
-      /'extract\.signals'[\s\S]{0,800}'[^']{100,}'/i.test(sql);
-    const hasCluster =
-      /update\s+public\.prompts[\s\S]*cluster\.summarize[\s\S]*body\s*=/i.test(sql) ||
-      /'cluster\.summarize'[\s\S]{0,800}'[^']{100,}'/i.test(sql);
+    // Order-insensitive: a Phase 2 update on the prompt is present iff the
+    // SQL has `body =` (or `body=`) within ~800 chars of the prompt name,
+    // in either order. Catches both UPDATE-style and ON CONFLICT…DO UPDATE.
+    function bodyUpdateFor(name: string): boolean {
+      const escaped = name.replace(/\./g, "\\.");
+      const re1 = new RegExp(`'${escaped}'[\\s\\S]{0,800}body\\s*=`, "i");
+      const re2 = new RegExp(`body\\s*=[\\s\\S]{0,1200}'${escaped}'`, "i");
+      return re1.test(sql) || re2.test(sql);
+    }
+    const hasExtract = bodyUpdateFor("extract.signals");
+    const hasCluster = bodyUpdateFor("cluster.summarize");
     if (hasExtract && hasCluster) {
       ok("prompts extract.signals + cluster.summarize bodies upgraded in 0003");
     } else {

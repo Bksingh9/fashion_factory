@@ -68,6 +68,14 @@ const schema = z.object({
   // Product Hunt GraphQL (Phase 2 listen).
   PRODUCT_HUNT_API_TOKEN: z.string().min(1),
 
+  // Vercel deploy (Phase 4 ship). Both optional — the ship pipeline
+  // skips the deploy step when either is absent.
+  VERCEL_API_TOKEN: z.string().min(1).optional(),
+  VERCEL_TEAM_ID: z.string().min(1).optional(),
+
+  // Optional override for the default ship template repo URL.
+  SHIP_TEMPLATE_REPO: z.string().url().optional(),
+
   // App
   NEXT_PUBLIC_APP_URL: z.string().url(),
   REDDIT_USER_AGENT: z.string().min(1),

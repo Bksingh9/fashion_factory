@@ -357,6 +357,91 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["spec_events"]["Insert"]>;
         Relationships: [];
       };
+      ship_templates: {
+        Row: {
+          id: string;
+          name: string;
+          repo_url: string;
+          default_branch: string;
+          manifest: Json;
+          active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          name: string;
+          repo_url: string;
+          default_branch?: string;
+          manifest?: Json;
+          active?: boolean;
+        };
+        Update: Partial<Database["public"]["Tables"]["ship_templates"]["Insert"]>;
+        Relationships: [];
+      };
+      ship_runs: {
+        Row: {
+          id: string;
+          user_id: string;
+          spec_id: string;
+          template_id: string;
+          status:
+            | "queued"
+            | "scaffolding"
+            | "generating"
+            | "pushing"
+            | "deploying"
+            | "done"
+            | "failed";
+          repo_owner: string | null;
+          repo_name: string | null;
+          repo_url: string | null;
+          installation_id: number | null;
+          default_branch: string | null;
+          vercel_project_id: string | null;
+          deploy_url: string | null;
+          error: string | null;
+          started_at: string;
+          finished_at: string | null;
+          metrics: Json;
+        };
+        Insert: {
+          user_id: string;
+          spec_id: string;
+          template_id: string;
+          status?: Database["public"]["Tables"]["ship_runs"]["Row"]["status"];
+          repo_owner?: string | null;
+          repo_name?: string | null;
+          repo_url?: string | null;
+          installation_id?: number | null;
+          default_branch?: string | null;
+          vercel_project_id?: string | null;
+          deploy_url?: string | null;
+          error?: string | null;
+          finished_at?: string | null;
+          metrics?: Json;
+        };
+        Update: Partial<Database["public"]["Tables"]["ship_runs"]["Insert"]>;
+        Relationships: [];
+      };
+      ship_files: {
+        Row: {
+          id: number;
+          run_id: string;
+          path: string;
+          sha: string | null;
+          bytes: number | null;
+          generated_by: string;
+        };
+        Insert: {
+          run_id: string;
+          path: string;
+          sha?: string | null;
+          bytes?: number | null;
+          generated_by: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["ship_files"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

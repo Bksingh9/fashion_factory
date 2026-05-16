@@ -37,4 +37,21 @@ export type AppEvents = {
   "validate.section.completed": {
     data: { spec_id: string; section: string };
   };
+  "ship.requested": {
+    data: {
+      spec_id: string;
+      installation_id: number;
+      owner_login: string;
+      repo_name?: string;
+    };
+  };
+  "ship.completed": {
+    data: { run_id: string; repo_url: string };
+  };
+  "ship.failed": {
+    data: { run_id: string; error: string };
+  };
+  "github.app.event": {
+    data: { event: string; payload: unknown };
+  };
 };

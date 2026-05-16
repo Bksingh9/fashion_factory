@@ -10,6 +10,7 @@ import { signalCluster } from "./signal.cluster";
 import { clusterSummarize } from "./cluster.summarize";
 import { privacyPurgeAuthors } from "./privacy.purge_authors";
 import { validateGenerate, validateCompetitorRefresh } from "./validate.generate";
+import { shipRun } from "./ship.run";
 
 export const functions = [
   noopFn,
@@ -21,4 +22,5 @@ export const functions = [
   privacyPurgeAuthors, // cron 0 3 * * * — §9 90-day author purge
   validateGenerate, // event validate.requested
   validateCompetitorRefresh, // cron 0 4 * * * — weekly competitors refresh on draft specs
+  shipRun, // event ship.requested — locked spec → fresh GitHub repo
 ];

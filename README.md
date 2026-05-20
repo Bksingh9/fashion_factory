@@ -28,7 +28,8 @@ Prerequisites: **Node 20+** and **pnpm 10+**.
 
 ```bash
 pnpm install
-cp .env.example .env.local       # fill in real values; see "Provider signup links" below
+cp .env.example .env.local       # fill in real values; see docs/SETUP.md
+./scripts/bootstrap.sh            # supabase link + db push + stripe products + healthz smoke
 pnpm dev                          # next dev on http://localhost:3000
 ```
 

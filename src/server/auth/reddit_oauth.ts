@@ -23,9 +23,20 @@ interface CachedToken {
 }
 
 let stubToken: string | null = null;
-/** Tests set this to bypass the network entirely. */
-export function setStubRedditToken(t: string | null): void {
-  stubToken = t;
+let forceAnonymous = false;
+/**
+ * Tests set this to bypass the network entirely. Pass `"ANONYMOUS"` to
+ * force the null return that triggers the anonymous-JSON fallback in
+ * reddit.ts. Pass `null` to clear any prior stub.
+ */
+export function setStubRedditToken(t: string | null | "ANONYMOUS"): void {
+  if (t === "ANONYMOUS") {
+    forceAnonymous = true;
+    stubToken = null;
+  } else {
+    forceAnonymous = false;
+    stubToken = t;
+  }
 }
 
 let redisCached: Redis | null = null;
@@ -38,11 +49,22 @@ function redis(): Redis {
   return redisCached;
 }
 
+/**
+ * Returns null when OAuth creds aren't configured. Callers should treat
+ * null as a signal to fall back to anonymous JSON (reddit.com/r/X/new.json).
+ */
 export async function getRedditAccessToken(
   fetcher: typeof fetch = fetch,
-): Promise<string> {
+): Promise<string | null> {
+  if (forceAnonymous) return null;
   if (stubToken !== null) return stubToken;
   if (process.env.STUB_CRAWLER === "1") return "stub-reddit-token";
+
+  // OAuth creds are optional. Without them, return null and let the
+  // caller use anonymous mode.
+  if (env.REDDIT_CLIENT_ID === undefined || env.REDDIT_CLIENT_SECRET === undefined) {
+    return null;
+  }
 
   // Cache lookup.
   const cached = (await redis().get(CACHE_KEY)) as CachedToken | null;

@@ -24,7 +24,9 @@ export type CrawlSourceId =
   | "play_store"
   | "trustpilot"
   | "g2"
-  | "ih";
+  | "ih"
+  | "github_issues"
+  | "devto";
 
 export interface Database {
   public: {

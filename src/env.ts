@@ -63,10 +63,10 @@ const schema = z.object({
   NEXT_PUBLIC_POSTHOG_KEY: z.string().min(1),
   NEXT_PUBLIC_POSTHOG_HOST: z.string().url(),
 
-  // Reddit OAuth (Phase 2 listen). client_credentials flow on
-  // https://www.reddit.com/api/v1/access_token.
-  REDDIT_CLIENT_ID: z.string().min(1),
-  REDDIT_CLIENT_SECRET: z.string().min(1),
+  // Reddit OAuth (optional — anonymous JSON fallback at reddit.com/r/X/new.json
+  // works without these. Provide them only if you want OAuth's higher rate ceiling).
+  REDDIT_CLIENT_ID: z.string().min(1).optional(),
+  REDDIT_CLIENT_SECRET: z.string().min(1).optional(),
 
   // Product Hunt GraphQL (Phase 2 listen).
   PRODUCT_HUNT_API_TOKEN: z.string().min(1),

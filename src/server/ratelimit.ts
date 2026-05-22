@@ -43,6 +43,10 @@ const CRAWL_RPM_LIMITS: Record<CrawlSource, number> = {
   trustpilot: 10,
   g2: 10,
   ih: 10,
+  // Phase 8 — free no-auth sources from the public-apis catalog.
+  // GitHub Search (unauthenticated): 60 req/hr → ~1 rpm safe ceiling.
+  github_issues: 1,
+  devto: 20,
 };
 
 function isStubbed(): boolean {

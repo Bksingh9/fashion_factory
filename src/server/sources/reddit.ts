@@ -49,21 +49,25 @@ const reddit: Crawler = async ({ cursor, params, fetcher = fetch }) => {
   const subs = paramStringArray(params, "subreddits");
   if (subs.length === 0) return { items: [], nextCursor: null };
 
+  // OAuth gives higher rate ceilings but isn't required — reddit.com's
+  // public JSON endpoint works anonymously with just a descriptive UA.
   const token = await getRedditAccessToken(fetcher);
   const items: RawSignal[] = [];
   let nextCursor: string | null = null;
 
   for (const sub of subs) {
-    const url = new URL(`https://oauth.reddit.com/r/${sub}/new.json`);
+    // OAuth path → oauth.reddit.com; anonymous path → www.reddit.com
+    const host = token === null ? "https://www.reddit.com" : "https://oauth.reddit.com";
+    const url = new URL(`${host}/r/${sub}/new.json`);
     url.searchParams.set("limit", "25");
     if (cursor !== null) url.searchParams.set("after", cursor);
 
-    const res = await fetcher(url.toString(), {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "User-Agent": env.REDDIT_USER_AGENT,
-      },
-    });
+    const headers: Record<string, string> = {
+      "User-Agent": env.REDDIT_USER_AGENT,
+    };
+    if (token !== null) headers.Authorization = `Bearer ${token}`;
+
+    const res = await fetcher(url.toString(), { headers });
     if (!res.ok) {
       throw new Error(`reddit: HTTP ${String(res.status)} for /r/${sub}`);
     }

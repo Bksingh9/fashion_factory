@@ -22,6 +22,8 @@ import play_store from "@/server/sources/play_store";
 import trustpilot from "@/server/sources/trustpilot";
 import g2 from "@/server/sources/g2";
 import ih from "@/server/sources/ih";
+import github_issues from "@/server/sources/github_issues";
+import devto from "@/server/sources/devto";
 
 const CRAWLERS: Record<CrawlSourceId, Crawler> = {
   reddit,
@@ -32,6 +34,8 @@ const CRAWLERS: Record<CrawlSourceId, Crawler> = {
   trustpilot,
   g2,
   ih,
+  github_issues,
+  devto,
 };
 
 /**

@@ -77,4 +77,22 @@ describe("reddit crawler", () => {
     if (first === undefined) return;
     expect(first.url).toContain("after=t3_prev");
   });
+
+  it("falls back to www.reddit.com anonymous JSON when OAuth token is null", async () => {
+    // Force the anonymous return (mirrors "no REDDIT_CLIENT_ID/SECRET in env").
+    setStubRedditToken("ANONYMOUS");
+    try {
+      const mock = createMockFetch(async () => jsonResponse(sampleListing));
+      await reddit({ cursor: null, params: { subreddits: ["SaaS"] }, fetcher: mock.fetch });
+      const [first] = mock.calls;
+      expect(first).toBeDefined();
+      if (first === undefined) return;
+      expect(first.url).toContain("https://www.reddit.com/r/SaaS/new.json");
+      const auth = (first.init?.headers as Record<string, string> | undefined)?.Authorization;
+      expect(auth).toBeUndefined();
+    } finally {
+      // Restore the prior stub so other tests don't drift.
+      setStubRedditToken("stub-token");
+    }
+  });
 });

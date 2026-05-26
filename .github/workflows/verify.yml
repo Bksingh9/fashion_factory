@@ -41,6 +41,27 @@ jobs:
       - name: Unit tests
         run: pnpm test
 
+  security-audit:
+    name: dependency CVE audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      # Fails the build on any HIGH/CRITICAL CVE. Moderate/low surface as
+      # warnings — triage + pin via pnpm.overrides, then re-audit clean.
+      - name: pnpm audit (high+)
+        run: pnpm audit --audit-level=high
+      - name: pnpm audit (full report, non-blocking)
+        run: pnpm audit --audit-level=low || true
+
   # Matrix over every phase so a regression in any one is visible separately
   # in the PR checks UI. Each step exits non-zero on regression.
   phase-verify:

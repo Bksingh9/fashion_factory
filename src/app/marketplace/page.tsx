@@ -7,7 +7,15 @@ import { getFeatured } from "@/server/marketplace/list";
 export const revalidate = 60;
 
 export default async function MarketplacePage(): Promise<React.ReactNode> {
-  const listings = await getFeatured(24);
+  // Build-time prerender (revalidate=60) must not hard-fail if the DB is
+  // unreachable during `next build`. Fall back to empty; ISR repopulates on
+  // the first real request once Supabase is reachable.
+  let listings: Awaited<ReturnType<typeof getFeatured>> = [];
+  try {
+    listings = await getFeatured(24);
+  } catch {
+    listings = [];
+  }
 
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-8 px-6 py-12">
